@@ -315,5 +315,7 @@ return require('packer').startup(function(use)
     --use 'TabbyML/vim-tabby'
     use {'rr-/vim-hexdec'}
     use "potamides/pantran.nvim"
+    -- colorscheme
+    use "daschw/leaf.nvim"
 end)
 

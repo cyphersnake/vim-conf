@@ -19,19 +19,19 @@ opt.guifont="Fura Code Medium Nerd Font 20"
 opt.hidden=true
 opt.iminsert=0
 opt.imsearch=0
-opt.incsearch=true                                  -- incremental search
+opt.incsearch=true      -- incremental search
 opt.laststatus=2
 opt.linebreak=true
 opt.number=true
-opt.relativenumber=true                      -- show line numbers
+opt.relativenumber=true -- show line numbers
 opt.ruler=true
-opt.scrolloff=50                               -- let 10 lines before/after cursor during scroll
-opt.secure=true                                 -- prohibit .vimrc files to execute shell, create files, etc...
+opt.scrolloff=50        -- let 10 lines before/after cursor during scroll
+opt.secure=true         -- prohibit .vimrc files to execute shell, create files, etc...
 opt.shell="/bin/zsh"
-opt.shiftwidth=4                               -- shift lines by 4 spaces
-opt.showmatch=true                                  -- shows matching part of bracket pairs (), [], {}
-opt.smarttab=true                                   -- set tabs for a shifttabs logic
-opt.spell=true
+opt.shiftwidth=4        -- shift lines by 4 spaces
+opt.showmatch=true      -- shows matching part of bracket pairs (), [], {}
+opt.smarttab=true       -- set tabs for a shifttabs logic
+opt.spell=false
 opt.termguicolors=true
 
 opt.spelllang=en,ru
@@ -43,7 +43,7 @@ opt.ttyfast=true                                    -- terminal acceleration set
 opt.undofile=true
 
 g.vimtex_view_method = 'zathura'
---g.vimtex_compiler_method = 'xelatex'
+g.vimtex_compiler_method = 'xelatex'
 
 cmd([[
     syntax enable
@@ -110,7 +110,8 @@ require'nvim-treesitter.configs'.setup {
   highlight = { enable = true }
 }
 --vim.cmd([[colorscheme gruvbox]])
-vim.cmd("colorscheme citruszest")
+--vim.cmd("colorscheme citruszest")
+vim.cmd("colorscheme leaf")
 
 require("transparent").setup({
   groups = { -- table: default groups
@@ -145,7 +146,7 @@ var('rustfmt_command',  "/home/q99/.rustup/toolchains/nightly-x86_64-unknown-lin
 
 var('webdevicons_enable_nerdtree', '1')
 
-var('LanguageClient_serverCommands', '{ \'rust\': [\'/home/q99/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin\'] }')
+var('LanguageClient_serverCommands', '{ / \'rust\': [\'/home/q99/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rust-analyzer\'], / \'go\': [\'gopls\'] }')
 
 local lsp_flags = {
   -- This is the default in Nvim 0.7+
@@ -639,4 +640,10 @@ require("mason").setup()
 
 require("pantran").setup{
   default_engine = "deepl",
+  engines = {
+      deepl = {
+          free_api = false,
+      },
+  },
 }
+
