@@ -90,25 +90,25 @@ cmd([[
 --         set background=dark
 --     endtry
 -- ]]
-require("gruvbox").setup({
-  undercurl = true,
-  underline = true,
-  bold = true,
-  italic = true,
-  strikethrough = true,
-  invert_selection = false,
-  invert_signs = false,
-  invert_tabline = false,
-  invert_intend_guides = false,
-  inverse = true, -- invert background for search, diffs, statuslines and errors
-  contrast = "hard", -- can be "hard", "soft" or empty string
-  overrides = {},
-  dim_inactive = false,
-  transparent_mode = false,
-})
-require'nvim-treesitter.configs'.setup {
-  highlight = { enable = true }
-}
+--require("gruvbox").setup({
+--  undercurl = true,
+--  underline = true,
+--  bold = true,
+--  italic = true,
+--  strikethrough = true,
+--  invert_selection = false,
+--  invert_signs = false,
+--  invert_tabline = false,
+--  invert_intend_guides = false,
+--  inverse = true, -- invert background for search, diffs, statuslines and errors
+--  contrast = "hard", -- can be "hard", "soft" or empty string
+--  overrides = {},
+--  dim_inactive = false,
+--  transparent_mode = false,
+--})
+--require'nvim-treesitter.configs'.setup {
+--  highlight = { enable = true }
+--}
 --vim.cmd([[colorscheme gruvbox]])
 --vim.cmd("colorscheme citruszest")
 vim.cmd("colorscheme leaf")
@@ -145,8 +145,6 @@ var('neoterm_size', '20')
 var('rustfmt_command',  "/home/q99/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustfmt")
 
 var('webdevicons_enable_nerdtree', '1')
-
-var('LanguageClient_serverCommands', '{ / \'rust\': [\'/home/q99/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rust-analyzer\'], / \'go\': [\'gopls\'] }')
 
 local lsp_flags = {
   -- This is the default in Nvim 0.7+
@@ -222,41 +220,10 @@ cmp.setup {
   },
 }
 
--- require("startup").setup({theme = "evil"})
 require('hardline').setup {}
-require'lspconfig'.rust_analyzer.setup({
-    on_attach=on_attach,
-    flags = lsp_flags,
-    settings = {
-        ["rust-analyzer"] = {
-            imports = {
-                granularity = {
-                    group = "module",
-                },
-                prefix = "self",
-            },
-            cargo = {
-                buildScripts = {
-                    enable = true,
-                },
-            },
-            procMacro = {
-                enable = true
-            },
-        }
-    }
-})
-require('lspconfig').ruff_lsp.setup {
-  on_attach = on_attach,
-  init_options = {
-    settings = {
-      -- Any extra CLI arguments for `ruff` go here.
-      args = {},
-    }
-  }
-}
 
 require'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
+
 require('crates').setup {
     smart_insert = true,
     insert_closing_quote = true,
@@ -510,7 +477,7 @@ require("neoai").setup({
     models = {
         {
             name = "openai",
-            model = "gpt-4-1106-preview",
+            model = "o3-mini-2025-01-31",
             params = nil,
         },
     },
@@ -627,15 +594,6 @@ iron.setup {
   ignore_blank_lines = true, -- ignore blank lines when sending visual select lines
 }
 
-require("ranger-nvim").setup({ replace_netrw = false })
-
-vim.api.nvim_set_keymap("n", "<leader>ef", "", {
-  noremap = true,
-  callback = function()
-    require("ranger-nvim").open(true)
-  end,
-})
-
 require("mason").setup()
 
 require("pantran").setup{
@@ -646,4 +604,63 @@ require("pantran").setup{
       },
   },
 }
+
+-- Function to find the repository string from the plugin block and open its GitHub URL
+function open_plugin_github()
+  local cur_line = vim.fn.line('.')
+  local total_lines = vim.fn.line('$')
+  local use_line = nil
+
+  -- Scan upward to find the first line starting with "use"
+  for i = cur_line, 1, -1 do
+    local line_text = vim.fn.getline(i):match("^%s*(.-)%s*$")
+    if line_text:sub(1, 3) == "use" then
+      use_line = line_text
+      cur_line = i  -- update cur_line to the "use" line if needed
+      break
+    end
+  end
+
+  if not use_line then
+    print("No 'use' statement found above the cursor.")
+    return
+  end
+
+  -- Try to extract repository directly from the "use" line
+  local repo = string.match(use_line, "use%s*['\"]([^'\"]+)['\"]")
+
+  -- If not found, assume the plugin is defined in a table and search below
+  if not repo then
+    for i = cur_line + 1, total_lines do
+      local line_text = vim.fn.getline(i)
+      repo = string.match(line_text, "['\"]([^'\"]+)['\"]")
+      if repo then
+        break
+      end
+      -- Stop if we reach the end of the table block
+      if line_text:match("^%s*}") then
+        break
+      end
+    end
+  end
+
+  if repo then
+    local url = "https://github.com/" .. repo
+    print("Opening: " .. url)
+    -- On macOS replace "xdg-open" with "open"
+    vim.fn.jobstart({ "xdg-open", url }, { detach = true })
+  else
+    print("Could not extract repository information.")
+  end
+end
+
+-- Create an autocommand group for plugins file mapping
+vim.cmd [[
+  augroup PluginsGitHubMapping
+    autocmd!
+    " Only set the mapping for Lua files named exactly 'plugins.lua'
+    autocmd BufEnter *.lua if expand('%:t') == 'plugins.lua' | nnoremap <buffer> <Leader>gh <cmd>lua open_plugin_github()<CR> | endif
+  augroup END
+]]
+
 

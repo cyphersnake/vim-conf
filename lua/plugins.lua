@@ -1,55 +1,110 @@
 return require('packer').startup(function(use)
 	--------------------=== MyPlugin ===----------------------
-    use 'modocache/move.vim'
+    -- For Move Programming Language
+    -- use 'modocache/move.vim'
+
+    -- For generate images of code with rust crate silicon
 	use 'segeljakt/vim-silicon'
+
+    -- For generate images of code with https://carbon.now.sh website
+	use 'kristijanhusak/vim-carbon-now-sh'
+
+    -- For grammary check
 	use 'rhysd/vim-grammarous'
 
-	------------------=== Colorscheme ===----------------------
-	use "ellisonleao/gruvbox.nvim"
+    -- For transparent background
 	use 'xiyaowong/nvim-transparent'
-	use 'kristijanhusak/vim-carbon-now-sh'
-	use 'kvrohit/mellow.nvim'
-	use 'Tsuzat/NeoSolarized.nvim'
-    use 'nyngwang/nvimgelion'
-    use "zootedb0t/citruszest.nvim" 
+
+	------------------=== Colorscheme ===----------------------
+	--use "ellisonleao/gruvbox.nvim"
+	--use 'kvrohit/mellow.nvim'
+	--use 'Tsuzat/NeoSolarized.nvim'
+    --use 'nyngwang/nvimgelion'
+    --use "zootedb0t/citruszest.nvim" 
+    use "daschw/leaf.nvim"
 
 	------------------=== Git ===----------------------
+    -- Emoji by command `:Unicodemoji` but not work DEBUG needed
 	use 'yazgoo/unicodemoji'
+
+    -- Syntax hightlit for gh actions
 	use 'yasuhiroki/github-actions-yaml.vim'
-	use 'Xuyuanp/nerdtree-git-plugin'
+
+    -- NerdTree new version
+    use 'preservim/nerdtree'
+
+    -- Way to open git-msg from current cursor
+    -- DEBUG needed, cursor not go inside popup
 	use 'rhysd/git-messenger.vim'
+
+    -- Clasic
 	use 'tpope/vim-fugitive'
-	use 'idanarye/vim-merginal'
+
+    -- Not used before, but look like a perfect solution for branch switching
+	use {
+        'idanarye/vim-merginal',
+        dependencies = {
+            'Shougo/vimproc.vim',
+        }
+    }
+
+    -- :GBrowse
 	use 'tpope/vim-rhubarb'
+    -- :GHInteractive
 	use 'ruanyl/vim-gh-line'
 
-	------------------=== File Navigation ===----------------------
+    -- File Navi Must Have
 	use 'junegunn/fzf'
+    -- File Navi Must Have
 	use 'junegunn/fzf.vim'
-	use 'jesseleite/vim-agriculture'
-	use 'michaeljsmith/vim-indent-object'
+
+    -- For more raw usage of ripgrep with :RgRaw
+	--use 'jesseleite/vim-agriculture'
+
+    -- For move with indent lines DEBUG needed, not work now
+	--use 'michaeljsmith/vim-indent-object'
 	use 'bronson/vim-visual-star-search'
+
+    -- Smooth scrolling
 	use 'yuttie/comfortable-motion.vim'
+
+    -- Not used before, but something like manager of tabs, buffers etc. Try to use with :CtrlSpace
 	use 'vim-ctrlspace/vim-ctrlspace'
+
+    -- Must Have - motion at page
 	use 'easymotion/vim-easymotion'
+
+    -- Lua alternative for easymotion
+    -- Need to be configurred
     use {
-      'phaazon/hop.nvim',
-      branch = 'v2', -- optional but strongly recommended
+      'smoka7/hop.nvim',
     }
-	use 'thaerkh/vim-indentguides'
+
+	--use 'thaerkh/vim-indentguides'
+    -- Must Have because :BufOnly
 	use 'vim-scripts/BufOnly.vim'
+
+    -- Not Using, bug :Fuf* maybe usefull, need to try
 	use 'vim-scripts/FuzzyFinder'
+
+    -- Must Have
 	use 'chaoren/vim-wordmotion'
-	use 'scrooloose/nerdtree'
-    -- Cow Startpage
-	-- use 'mhinz/vim-startify'
+
+    -- Must Have because use `f` command all time
 	use 'rhysd/clever-f.vim'
+
+    -- Must Have, use edit inside ({[ all time
 	use 'wellle/targets.vim'
+
+    -- Like nedtree but for tags
 	use 'majutsushi/tagbar'
+
+    -- MustHave to repeat by `.` normally
 	use 'tpope/vim-repeat'
+    -- MustHave 
 	use 'mbbill/undotree'
+    -- Must Have to see marks
 	use 'kshenoy/vim-signature'
-    use "kelly-lin/ranger.nvim"
 
 	-- Latex ===---------------------------------
 	use 'lervag/vimtex'
@@ -89,18 +144,16 @@ return require('packer').startup(function(use)
 	--- Rust ---
 	use 'uarun/vim-protobuf'
 	use 'uber/prototool'
-	use 'rust-lang/rust.vim'
 	use 'mattn/webapi-vim'
-	use 'mhinz/vim-crates'
     use 'neovim/nvim-lspconfig'
-	use {
-		'simrat39/rust-tools.nvim',
-		requires = {
-		    'neovim/nvim-lspconfig',
-		    'nvim-lua/plenary.nvim',
-		    'mfussenegger/nvim-dap'
-		}
-	}
+
+    use {
+      'mrcjkb/rustaceanvim',
+      version = '^6', -- Recommended
+    }
+
+	use 'mhinz/vim-crates'
+
     use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" } }
     use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
     use 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
@@ -133,7 +186,6 @@ return require('packer').startup(function(use)
     --  end
     --}
 
-    --- Start Page ---
     --use {
     --    "startup-nvim/startup.nvim",
     --    requires = {"nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim"},
@@ -291,18 +343,18 @@ return require('packer').startup(function(use)
         'nvim-treesitter/nvim-treesitter',
         run = ':TSUpdate'
     }
-    use {
-        'nvim-orgmode/orgmode', config = function()
-        require('orgmode').setup_ts_grammar()
-        require('orgmode').setup{}
-        end
-    }
-    use { 
-        'Bryley/neoai.nvim',
-        requires = {
-            "MunifTanjim/nui.nvim",
-        },
-    }
+    --use {
+    --    'nvim-orgmode/orgmode', config = function()
+    --    require('orgmode').setup_ts_grammar()
+    --    require('orgmode').setup{}
+    --    end
+    --}
+    --use { 
+    --    'Bryley/neoai.nvim',
+    --    requires = {
+    --        "MunifTanjim/nui.nvim",
+    --    },
+    --}
     use {
       "whleucka/reverb.nvim",
       event = "BufReadPre",
@@ -315,7 +367,29 @@ return require('packer').startup(function(use)
     --use 'TabbyML/vim-tabby'
     use {'rr-/vim-hexdec'}
     use "potamides/pantran.nvim"
-    -- colorscheme
-    use "daschw/leaf.nvim"
+    use {
+      "olexsmir/gopher.nvim",
+      dependencies = {
+        "nvim-lua/plenary.nvim",
+        "nvim-treesitter/nvim-treesitter",
+        "mfussenegger/nvim-dap", -- (optional) only if you use `gopher.dap`
+      }
+    }
+    use {
+      "chipsenkbeil/org-roam.nvim",
+      tag = "0.1.1",
+      requires = {
+        {
+          "nvim-orgmode/orgmode",
+          tag = "0.3.7",
+        },
+      },
+      config = function()
+        require("org-roam").setup({
+          directory = "~/org/roam",
+        })
+      end
+    }
 end)
+
 

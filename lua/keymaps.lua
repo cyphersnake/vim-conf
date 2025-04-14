@@ -39,6 +39,8 @@ au("Filetype", { pattern = "rust", callback = function()
     vim_map('n', '<leader>cC', crates.open_crates_io,          opts)
     vim_map('n', 'K',          crates.show_popup,              opts)
 
+    map('n', '<leader>[',  ':RustLsp workspaceSymbol allSymbols ', default_opts)
+
     map('n', '<F1>',  ':RustFmt<CR>',                                              default_opts)
     map('n', '<F13>', ':AbortDispatch<CR>',                                        default_opts)
     map('n', '<F4>',  ':Dispatch cargo clippy --workspace --tests --examples --benches<CR>', default_opts)
@@ -323,3 +325,26 @@ end
 
 vim_map("n", '<Leader>c', "<cmd>lua Delta_git_bcommits()<CR>", default_opts)
 -- vim_map('n', '<Leader>c',  telescope_builtin.git_bcommits, {})
+
+
+-- Function to extract repository name from the current line and open it in the browser
+local function open_plugin_github()
+  -- Get the current line text
+  local line = vim.fn.getline('.')
+  -- Match lines of the format: use 'owner/repository'
+  local plugin = string.match(line, "use%s+'([^']+)'")
+  if plugin then
+    local url = "https://github.com/" .. plugin
+    print("Opening: " .. url)
+    -- Adjust the following command according to your OS.
+    -- For Linux, use "xdg-open". For macOS, use "open".
+    vim.fn.jobstart({ "xdg-open", url }, { detach = true })
+  else
+    print("No valid plugin specification found on the current line.")
+  end
+end
+
+-- Only enable the mapping in a file named "plugins.lua"
+if vim.fn.expand('%:t') == "plugins.lua" then
+  vim.api.nvim_set_keymap("n", "<Leader>gh", "<cmd>lua open_plugin_github()<CR>", { noremap = true, silent = true })
+end
